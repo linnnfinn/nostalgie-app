@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbst 2002 · HIM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --bg: #0c0905;
+  --bg2: #161008;
+  --bg3: #1e1509;
+  --beige: #c8b89a;
+  --muted: #6a5a42;
+  --rust: #a85e22;
+  --cream: #e8d8bc;
+  --red: #6a1414;
+  --red2: #8a2020;
+  --border: rgba(200,184,154,0.07);
+  --border2: rgba(200,184,154,0.14);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg);
+  color:var(--beige);
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:18px;
+  line-height:1.85;
+  overflow-x:hidden;
+  padding-bottom:120px;
+}
+
+/* Grain */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9000;
+  opacity:0.45;
+  mix-blend-mode:overlay;
+}
+
+/* Vignette */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:radial-gradient(ellipse at center, transparent 25%, rgba(8,6,3,0.75) 100%);
+  pointer-events:none;
+  z-index:8999;
+}
+
+/* ── INTRO ── */
+#intro {
+  min-height:55vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  max-width:620px;
+  margin:0 auto;
+  padding:0 36px 56px;
+}
+
+.era { font-family:'Special Elite',monospace; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; opacity:0; animation:fu 1s ease 0.4s forwards; }
+.title { font-size:56px; font-weight:600; color:var(--cream); line-height:1.0; margin-bottom:14px; opacity:0; animation:fu 1s ease 0.7s forwards; }
+.subtitle { font-style:italic; color:var(--muted); font-size:16px; opacity:0; animation:fu 1s ease 1.0s forwards; }
+@keyframes fu { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── VIDEO BLOCK ── */
+#video-section {
+  max-width:620px;
+  margin:0 auto 0;
+  padding:0 36px 40px;
+}
+
+.video-label {
+  font-family:'Special Elite',monospace;
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:12px;
+  opacity:0.6;
+}
+
+.video-tabs {
+  display:flex;
+  gap:6px;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+
+.vtab {
+  font-family:'Special Elite',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  border:1px solid var(--border2);
+  padding:5px 10px;
+  border-radius:2px;
+  cursor:pointer;
+  background:none;
+  transition:all 0.2s;
+}
+.vtab:hover,.vtab.active { color:var(--cream); border-color:rgba(200,184,154,0.35); background:rgba(200,184,154,0.05); }
+
+.video-wrap {
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:2px;
+  overflow:hidden;
+}
+
+.video-wrap iframe {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+.video-caption {
+  margin-top:8px;
+  font-size:12px;
+  color:var(--muted);
+  font-style:italic;
+  opacity:0.6;
+}
+
+/* ── FEED ── */
+#feed {
+  max-width:580px;
+  margin:0 auto;
+  padding:0 36px;
+}
+
+.moment {
+  padding:44px 0;
+  border-bottom:1px solid var(--border);
+  opacity:0;
+  transform:translateY(18px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.moment.visible { opacity:1; transform:translateY(0); }
+
+/* Post */
+.who {
+  font-family:'Special Elite',monospace;
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:14px;
+  display:flex;
+  gap:8px;
+  align-items:baseline;
+  flex-wrap:wrap;
+}
+.who .src { opacity:0.45; font-size:9px; }
+
+.body {
+  font-size:18px;
+  color:var(--beige);
+  line-height:1.85;
+  margin-bottom:16px;
+}
+.body em { color:var(--cream); }
+
+.sig {
+  font-size:12px;
+  color:var(--muted);
+  font-style:italic;
+  opacity:0.55;
+  margin-bottom:16px;
+}
+
+/* MSN */
+.msn {
+  border-left:1px solid var(--border2);
+  padding:12px 0 12px 20px;
+  margin-bottom:16px;
+}
+.msn-who {
+  font-family:'Special Elite',monospace;
+  font-size:10px;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin-bottom:5px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.dot { width:6px;height:6px;border-radius:50%;background:#3a7a3a;animation:dp 2.5s ease-in-out infinite;flex-shrink:0; }
+@keyframes dp{0%,100%{opacity:1}50%{opacity:0.2}}
+.msn-msg { font-style:italic; color:var(--cream); font-size:17px; line-height:1.7; }
+
+/* Image */
+.img-moment { background:var(--bg2); border:1px solid var(--border); overflow:hidden; border-radius:2px; }
+.img-moment img { width:100%; display:block; opacity:0.75; filter:sepia(0.3) brightness(0.85); transition:opacity 0.3s; }
+.img-moment img:hover { opacity:0.9; }
+.img-moment .img-meta { padding:10px 14px; font-family:'Special Elite',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); opacity:0.6; }
+
+/* Rabbit hole */
+.rh-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-family:'Special Elite',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  padding:0;
+  opacity:0.55;
+  transition:opacity 0.2s, color 0.2s;
+  margin-bottom:0;
+}
+.rh-btn:hover,.rh-btn.open { opacity:1; color:var(--rust); }
+.rh-arr { transition:transform 0.35s; display:inline-block; }
+.rh-btn.open .rh-arr { transform:rotate(90deg); }
+
+.rh-body {
+  display:none;
+  margin-top:16px;
+  padding-left:16px;
+  border-left:1px solid rgba(168,94,34,0.2);
+}
+.rh-body.open { display:block; animation:rhin 0.35s ease; }
+@keyframes rhin{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+
+.rh-block { margin-bottom:14px; }
+.rh-type { font-family:'Special Elite',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--rust); opacity:0.7; margin-bottom:5px; }
+.rh-text { font-size:15px; color:var(--beige); line-height:1.75; font-style:italic; }
+.rh-text strong { color:var(--cream); font-style:normal; font-weight:600; }
+.rh-link { display:inline-block; margin-top:8px; font-family:'Special Elite',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--border2); padding-bottom:1px; transition:color 0.2s; }
+.rh-link:hover { color:var(--rust); }
+
+/* Heart */
+.hrow { margin-top:14px; }
+.hbtn { background:none; border:none; cursor:pointer; color:var(--muted); font-size:16px; opacity:0.3; transition:opacity 0.2s,transform 0.15s,color 0.2s; padding:0; line-height:1; }
+.hbtn:hover { opacity:0.7; transform:scale(1.15); }
+.hbtn.saved { color:var(--red2); opacity:1; }
+
+/* End marker */
+.endless { text-align:center; padding:60px 0 10px; font-family:'Special Elite',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); opacity:0.25; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:2px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(200,184,154,0.08); }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="era">Oktober 2002 · HIM</div>
+  <div class="title">Herbst<br>mit HIM</div>
+  <div class="subtitle">MSN läuft. Es ist spät.<br>Du musst morgen früh raus.</div>
+</div>
+
+<!-- VIDEO -->
+<div id="video-section">
+  <div class="video-label">Live-Aufnahmen · wähle eine</div>
+  <div class="video-tabs">
+    <button class="vtab active" onclick="loadVideo('FbatfnGjgwI',this)">Ilosaarirock · 13. Juli 2002</button>
+    <button class="vtab" onclick="loadVideo('9onZFgzaJWg',this)">Turku · 2002</button>
+    <button class="vtab" onclick="loadVideo('8O8ZLKHSFIA',this)">Tavastia Silvester · 31. Dez 2003</button>
+    <button class="vtab" onclick="loadVideo('4H7pPvtVQJk',this)">Rock am Ring · 2001</button>
+  </div>
+  <div class="video-wrap">
+    <iframe id="yt" src="https://www.youtube-nocookie.com/embed/FbatfnGjgwI?rel=0&modestbranding=1&color=white" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="video-caption" id="vcap">HIM live @ Ilosaarirock, Joensuu · 13. Juli 2002 · Fan-Aufnahme</div>
+</div>
+
+<!-- FEED -->
+<div id="feed">
+
+  <div class="moment">
+    <div class="who">Angel66658475779 <span class="src">· plattentests.de · Feb 2002</span></div>
+    <div class="body">Ich war im September auf einem Konzert und es war mehr als geil — ich finde darum total schade das sie dieses Jahr nicht touren.</div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">Dieses Gefühl danach. Wenn man weiß dass man Monate warten muss und "Monate" sich damals anders anfühlte. Keine Stories. Keine Clips. Die Band verschwand einfach.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">was damals passierte</div>
+        <div class="rh-text"><strong>Love Metal</strong> war noch nicht mal angekündigt. Ville Valo tauchte gerade durch Bam Margeras Jackass-Sendungen in den USA auf — was in deutschen Foren heiß diskutiert wurde. Zu viel Aufmerksamkeit. Zu schnell.</div>
+      </div>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="msn">
+      <div class="msn-who"><span class="dot"></span>darkangel_02@hotmail.com <span style="opacity:0.35;font-size:9px;margin-left:3px;">23:47</span></div>
+      <div class="msn-msg">"join me in death" läuft gerade. kannst du auch nicht schlafen?</div>
+    </div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">MSN-Gespräche nach Mitternacht hatten eine eigene Zeitzone. Niemand fragte warum man noch wach war. Man war einfach da.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">stimmen von damals</div>
+        <div class="rh-text">Der MSN-Status war das erste öffentliche Selbst. Ville Valo-Zitate, halbe Liedzeilen, kryptische Halbsätze. Man verbrachte Stunden damit den richtigen zu finden.</div>
+      </div>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="img-moment">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/HIM_band_2009.jpg/800px-HIM_band_2009.jpg" alt="HIM Band" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;opacity:0.3;font-family:Special Elite,monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;\'>Bild lädt nur online</div>'">
+      <div class="img-meta">HIM · Bandphoto · Wikimedia Commons</div>
+    </div>
+    <button class="rh-btn" style="margin-top:14px;" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">Das Poster über dem Bett. Ausgeschnitten aus dem Rock Hard oder dem Orkus. Mit Tesafilm. Schief. Trotzdem perfekt.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">was damals passierte</div>
+        <div class="rh-text">Das <strong>Orkus-Magazin</strong> war 2002 die wichtigste Quelle für HIM-Fotos in Deutschland. Kein Instagram. Kein digitaler Pressepool. Man kaufte das Heft wegen eines einzigen Fotos.</div>
+      </div>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="who">PoisonGirl <span class="src">· plattentests.de · März 2002</span></div>
+    <div class="body">Egal ob ich den Ville in 5 oda 10 Jahren noch mag oda ned... aba die Erinnerung an die Treffen mit Ville & Co kann ma keiner nehmen.</div>
+    <div class="sig">— PoisonGirl, 17, Wien</div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">stimmen von damals</div>
+        <div class="rh-text">PoisonGirl wusste in welchem Hotel HIM in Wien übernachtete. Sie hat es nie verraten. Im selben Thread diskutieren 40 Seiten lang Menschen, ob das überhaupt stimmt.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">Das Wissen dass diese Momente irgendwann vorbei sein würden. Und die stille Entschlossenheit, sie trotzdem nicht gehen zu lassen. Auch mit 17 weiß man manchmal genau was zählt.</div>
+      </div>
+      <a class="rh-link" href="https://www.plattentests.de/mobile/forum.php?action=showThread&id=1005&page=3" target="_blank">→ original-thread, 2002</a>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="who">Razorblade_ <span class="src">· plattentests.de · Feb 2002</span></div>
+    <div class="body">normalerweise beteilige ich mich an so sinnlosen diskussionen nicht, weil ich das akzeptieren kann, dass es leute gibt die was anderes wollen als ich.</div>
+    <div class="sig">cu sweethearts · ich</div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">"cu sweethearts" als Abschied. Niemand fragt mehr warum das so schön war. Es war einfach so — eine kleine Geste am Ende von etwas das nirgendwo hinführte und trotzdem zählte.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">stimmen von damals</div>
+        <div class="rh-text">Diese Foren hatten keine Algorithmen. Alles blieb stehen. Man konnte drei Jahre später noch lesen was jemand um Mitternacht geschrieben hatte. Unfreiwillig ehrlich.</div>
+      </div>
+      <a class="rh-link" href="https://web.archive.org/web/2003*/plattentests.de" target="_blank">→ plattentests.de 2003 im archiv</a>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="who">tina · 24 Jahre <span class="src">· plattentests.de · Feb 2002</span></div>
+    <div class="body">Jetzt besuche ich in 1 Monat ne Freundin in Finnland, nähe HEL. Ich will nämlich auf jedenfall in HEL versuchen, Valo mal persönlich zu treffen. Im Tavastia oder so.</div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">Einfach hinfahren. Ohne zu wissen ob es klappt. Ohne GPS, ohne dass irgendwer postet wo die Band gerade ist. Nur eine Adresse und die Hoffnung.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">was damals passierte</div>
+        <div class="rh-text">Der <strong>Tavastia Club</strong> fasst knapp 900 Menschen. Ville Valo kannte viele Gesichter dort. Ob Tina ihn getroffen hat, weiß niemand. Ihr Thread endet einfach. Wie viele damals.</div>
+      </div>
+      <a class="rh-link" href="https://www.tavastiaklubi.fi" target="_blank">→ tavastia club, helsinki</a>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="msn">
+      <div class="msn-who"><span class="dot"></span>FlyingAngel_HIM@hotmail.de <span style="opacity:0.35;font-size:9px;margin-left:3px;">00:23</span></div>
+      <div class="msn-msg">ich hab durch zufall mal die handy nummer vom ville in die finger gekriegt... seitdem kennen wir uns und... ja. sonst noch was? ;-)</div>
+    </div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">stimmen von damals</div>
+        <div class="rh-text">FlyingAngel hat das wirklich so gepostet. Im öffentlichen Forum. Ob es stimmte — der Thread diskutiert es auf 59 Seiten. Die Frage blieb offen. Das Netz hat nichts gelöscht.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">Das kollektive Innehalten wenn jemand sowas behauptete. Das Zweifeln. Dann das Hoffen dass es stimmt — weil es bedeuten würde dass sowas möglich war.</div>
+      </div>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="moment">
+    <div class="who">Julia, 17 <span class="src">· plattentests.de · Feb 2002</span></div>
+    <div class="body">Ich selber bin seit '96 HIM-Fan aber wenn ich mir da so durchlese, dass andere hier die Band schon getroffen haben, frage ich mich ob ich mich wirklich als Fan bezeichnen kann?!</div>
+    <button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button>
+    <div class="rh-body">
+      <div class="rh-block">
+        <div class="rh-type">du kennst das</div>
+        <div class="rh-text">Bin ich Fan genug? Habe ich genug gehört, genug gewusst, genug gefühlt? Kein Algorithmus hat das je beantwortet. Die Frage stellte man sich einfach — alleine, um Mitternacht.</div>
+      </div>
+      <div class="rh-block">
+        <div class="rh-type">was damals passierte</div>
+        <div class="rh-text">HIM seit 1996 in Deutschland zu kennen bedeutete: <strong>Import-CDs bestellen</strong>, ohne die Band je live gesehen zu haben. Drei Jahre nur Kassetten, Kopien, Gerüchte.</div>
+      </div>
+    </div>
+    <div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>
+  </div>
+
+  <div class="endless" id="endless">∞ &nbsp; dieser raum geht weiter</div>
+
+</div>
+
+<script>
+// Video switcher
+const caps = {
+  'FbatfnGjgwI':'HIM live @ Ilosaarirock, Joensuu · 13. Juli 2002 · Fan-Aufnahme',
+  '9onZFgzaJWg':'HIM live @ Turku · 2002 · Fan-Aufnahme',
+  '8O8ZLKHSFIA':'HIM live @ Tavastia Club, Helsinki · Silvester 31. Dez 2003 · VHS-Rip',
+  '4H7pPvtVQJk':'HIM live @ Rock am Ring · Nürburgring · 02. Juni 2001 · Rockpalast'
+};
+
+function loadVideo(id, btn){
+  document.getElementById('yt').src='https://www.youtube-nocookie.com/embed/'+id+'?rel=0&modestbranding=1&color=white';
+  document.getElementById('vcap').textContent=caps[id]||'';
+  document.querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Scroll fade-in
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),60);});},{threshold:0.07});
+document.querySelectorAll('.moment').forEach(el=>obs.observe(el));
+
+// Rabbit hole
+function toggleRH(btn){
+  const body=btn.nextElementSibling;
+  btn.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// Heart
+function toggleH(btn){
+  btn.classList.toggle('saved');
+  btn.textContent=btn.classList.contains('saved')?'♥':'♡';
+  if(btn.classList.contains('saved'))toast('♥ gespeichert');
+}
+
+// Infinite scroll
+const extra=[
+  {type:'post',who:'Sylvia',src:'plattentests.de · Feb 2002',text:'Es ist auf jeden Fall Tatsache, dass HIM live noch viel besser sind... Und jeder der das noch nicht miterlebt hat, hat was versäumt!!!',t1:'du kennst das',r1:'Das Wissen um etwas das man nicht beschreiben kann. Und die leise Ungeduld gegenüber denen die es nie erlebt haben.',t2:'stimmen von damals',r2:'"Es ist auf jeden Fall Tatsache" — Sylvia schreibt das 2002 ins Leere. Zwanzig Jahre später ist es immer noch wahr.'},
+  {type:'msn',who:'razorblade.romance@web.de',src:'01:14',text:'hörst du das auch gerade? genau dieser teil. genau jetzt.',t1:'du kennst das',r1:'Musik teilen ohne im selben Raum zu sein. Das war 2002 das Höchste was geht.',t2:'stimmen von damals',r2:'Man schrieb den Songtext. Zeile für Zeile. Und hoffte dass die andere Person verstand.'},
+  {type:'post',who:'tina',src:'plattentests.de · März 2002',text:'Ich finde nur schade, dass HIM jetzt Pause machen. *raunz*',t1:'du kennst das',r1:'"*raunz*" — Aktionen in Sternchen. Das war Emojis bevor es Emojis gab. Eine ganze Gefühlssprache die fast verschwunden ist.',t2:'was damals passierte',r2:'Tourneen hatten Lücken die sich ewig anfühlten. Keine Social-Media-Updates. Einfach Stille.'},
+];
+
+let loaded=0;
+window.addEventListener('scroll',()=>{
+  if(loaded>=extra.length)return;
+  if(window.scrollY+window.innerHeight>document.body.scrollHeight-500){
+    const p=extra[loaded++];
+    const div=document.createElement('div');
+    div.className='moment';
+    const inner=p.type==='msn'
+      ?`<div class="msn"><div class="msn-who"><span class="dot"></span>${p.who}<span style="opacity:0.35;font-size:9px;margin-left:3px;">${p.src}</span></div><div class="msn-msg">${p.text}</div></div>`
+      :`<div class="who">${p.who}<span class="src">· ${p.src}</span></div><div class="body">${p.text}</div>`;
+    div.innerHTML=inner+`<button class="rh-btn" onclick="toggleRH(this)"><span class="rh-arr">›</span> tiefer</button><div class="rh-body"><div class="rh-block"><div class="rh-type">${p.t1}</div><div class="rh-text">${p.r1}</div></div><div class="rh-block"><div class="rh-type">${p.t2}</div><div class="rh-text">${p.r2}</div></div></div><div class="hrow"><button class="hbtn" onclick="toggleH(this)">♡</button></div>`;
+    document.getElementById('feed').insertBefore(div,document.getElementById('endless'));
+    setTimeout(()=>obs.observe(div),50);
+  }
+});
+
+// Toast
+let tel;
+function toast(msg){
+  if(!tel){tel=document.createElement('div');tel.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(12,9,5,0.97);border:1px solid rgba(106,20,20,0.4);color:#c8b89a;font-family:"Special Elite",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:2px;z-index:200;transition:transform 0.3s,opacity 0.3s;opacity:0;white-space:nowrap;';document.body.appendChild(tel);}
+  tel.textContent=msg;tel.style.transform='translateX(-50%) translateY(0)';tel.style.opacity='1';
+  clearTimeout(tel._t);tel._t=setTimeout(()=>{tel.style.transform='translateX(-50%) translateY(10px)';tel.style.opacity='0';},1800);
+}
+</script>
+</body>
+</html>
